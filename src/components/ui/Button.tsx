@@ -8,7 +8,7 @@ const Button = ({ children, className, width = "w-full", ...rest }: IProps) => {
   return (
     <button
       type="submit"
-      className={`${className} ${width} !mt-6 border-0 uppercase`}
+      className={`${className} ${width} !mt-6 border-0 uppercase py-3 font-bold rounded-lg text-white`}
       {...rest}
     >
       {children}
