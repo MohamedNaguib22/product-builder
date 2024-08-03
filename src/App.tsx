@@ -8,6 +8,16 @@ import Input from "./components/ui/Input";
 import Color from "./components/Color";
 
 const App = () => {
+  // Function add product Comment
+  // const addColor = (color: string)=> {
+  //     setProduct((prv)=> {
+  //       if (prv.colors.includes(color)) {
+  //         return prv
+  //       }
+  //       return { ...prv, colors: [...prv.colors, color] };
+  //     });
+  // }
+
   // --------defaultData----------
   const defaultData = {
     title: " ",
@@ -33,24 +43,37 @@ const App = () => {
   const closeModal = () => {
     setIsOpen(false);
   };
+
+  const addColorInProduct = (color: string) => {
+    if (product.colors.includes(color)) {
+      return;
+    }
+    setProduct((prv) => ({ ...prv, colors: [...prv.colors, color] }));
+  };
+
+  const removeColor = (i: string) => {
+    setProduct((prevProduct) => ({
+      ...prevProduct,
+      colors: prevProduct.colors.filter((color) => color !== i),
+    }));
+    // const filter = product.colors.filter((color) => color !== i);
+    // setProduct((prv) => ({ ...prv, colors: filter }));
+  };
+  
   // ---------Render-----------
+
   const renderCard = products.map((product) => (
     <Card key={product.id} product={product} />
   ));
   const renderColor = colors.map((color) => (
-    <Color
-      onClick={() =>
-        setProduct((prv) => ({ ...prv, colors: [...prv.colors, color] }))
-      }
-      key={color}
-      color={color}
-    />
+    <Color onClick={() => addColorInProduct(color)} key={color} color={color} />
   ));
   const renderColorClick = product.colors.map((i) => (
     <span
       key={i}
-      className="w-[60px] h-[30px] text-white flex justify-center items-center rounded-lg"
+      className="w-[70px] h-[30px] text-white flex justify-center items-center rounded-lg cursor-pointer"
       style={{ backgroundColor: i }}
+      onClick={() => removeColor(i)}
     >
       {i}
     </span>
@@ -80,9 +103,7 @@ const App = () => {
       </div>
       <Modal isOpen={isOpen} closeModal={closeModal}>
         {renderInput}
-        <div className="flex gap-2 items-center flex-wrap">
-          {renderColor}
-        </div>
+        <div className="flex gap-2 items-center flex-wrap">{renderColor}</div>
         <div className="flex gap-2 items-center flex-wrap mt-2">
           {renderColorClick}
         </div>

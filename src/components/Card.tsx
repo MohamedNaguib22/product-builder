@@ -1,4 +1,4 @@
-import { textCut } from "../assets/utilities";
+import { textCut } from "../utilities";
 import { IProducts } from "../interfaces";
 import Color from "./Color";
 import Button from "./ui/Button";
