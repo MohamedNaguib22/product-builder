@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import Card from "./components/Card";
 import Button from "./components/ui/Button";
 import { colors, formInputsList, productList } from "./Data";
@@ -6,6 +6,8 @@ import { IProducts } from "./interfaces";
 import Modal from "./components/Modal";
 import Input from "./components/ui/Input";
 import Color from "./components/Color";
+import { validationErrorMessage } from "./Validation";
+import Massage from "./components/Massage";
 
 const App = () => {
   // Function add product Comment
@@ -20,7 +22,7 @@ const App = () => {
 
   // --------defaultData----------
   const defaultData = {
-    title: " ",
+    title: "",
     description: "",
     imageURL: "",
     price: "",
@@ -31,11 +33,30 @@ const App = () => {
     },
   };
   // -------State-----------
-  const [products, setProducts] = useState<IProducts[]>(productList);
+  const [products, setProducts] = useState<IProducts[]>(() => {
+    const savedProducts = localStorage.getItem("products");
+    return savedProducts ? JSON.parse(savedProducts) : productList;
+  });
   const [product, setProduct] = useState<IProducts>(defaultData);
+  const [error, setError] = useState<{
+    title?: string;
+    description?: string;
+    imageURL?: string;
+    price?: string;
+  }>();
+
   const [isOpen, setIsOpen] = useState(false);
+  console.log(error);
 
   // ------Functions--------
+  const updateLocalStorage = (updatedProducts: IProducts[]) => {
+    localStorage.setItem("products", JSON.stringify(updatedProducts));
+  };
+
+  useEffect(() => {
+    updateLocalStorage(products);
+  }, [products]);
+
   const openModal = () => {
     setIsOpen(true);
   };
@@ -59,6 +80,41 @@ const App = () => {
     // const filter = product.colors.filter((color) => color !== i);
     // setProduct((prv) => ({ ...prv, colors: filter }));
   };
+
+  const onChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setProduct((prv) => ({ ...prv, [name]: value }));
+    setError((prevError) => ({ ...prevError, [name]: "" }));
+  };
+  // use Error function
+  const errors = validationErrorMessage({
+    title: "",
+    description: "",
+    imageURL: "",
+    price: "",
+  });
+
+  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError(errors);
+    const errorMsg =
+      Object.values(errors).some((i) => i === "") &&
+      Object.values(errors).every((i) => i === "");
+    const updatedProducts = [product, ...products];
+    if (errorMsg) {
+      setProducts(updatedProducts);
+      updateLocalStorage(updatedProducts);
+      // setProducts((prev) => {
+      //   const updatedProducts = [product, ...prev];
+      //   updateLocalStorage(updatedProducts);
+      //   return updatedProducts;
+      // });
+      setIsOpen(false);
+      setProduct(defaultData);
+    } else {
+      return;
+    }
+  };
   
   // ---------Render-----------
 
@@ -80,17 +136,24 @@ const App = () => {
   ));
   const renderInput = formInputsList.map((input) => (
     <div key={input.id} className="flex flex-col">
-      <label htmlFor={input.id} className="uppercase font-medium">
+      <label htmlFor={input.id} className="font-medium">
         {input.name}
       </label>
-      <Input placeholder={input.placeholder} />
+      <Input
+        placeholder={input.placeholder}
+        name={input.name}
+        value={product[input.name]}
+        onChange={onChangeInput}
+      />
+      <Massage msg={(error && error[input.name]) || ""} />
     </div>
   ));
   return (
-    <div className="container py-6 " onClick={openModal}>
+    <div className="container py-6 ">
       {/* Button */}
       <div className="flex justify-center pb-8">
         <Button
+          onClick={openModal}
           width="w-fit"
           className="bg-green-500 flex-2 hover:bg-green-600 transition-all duration-300 px-4"
         >
@@ -102,22 +165,27 @@ const App = () => {
         {renderCard}
       </div>
       <Modal isOpen={isOpen} closeModal={closeModal}>
-        {renderInput}
-        <div className="flex gap-2 items-center flex-wrap">{renderColor}</div>
-        <div className="flex gap-2 items-center flex-wrap mt-2">
-          {renderColorClick}
-        </div>
-        <div className="flex items-center space-x-2">
-          <Button className="bg-green-500 flex-2 hover:bg-green-600 transition-all duration-300">
-            Submit
-          </Button>
-          <Button
-            onClick={closeModal}
-            className="bg-gray-400 flex-1 px-4 hover:bg-gray-500 transition-all duration-300"
-          >
-            Cancel
-          </Button>
-        </div>
+        <form onSubmit={onSubmit}>
+          {renderInput}
+          <div className="flex gap-2 items-center flex-wrap">{renderColor}</div>
+          <div className="flex gap-2 items-center flex-wrap mt-2">
+            {renderColorClick}
+          </div>
+          <div className="flex items-center space-x-2">
+            <Button
+              type={"submit"}
+              className="bg-green-500 flex-2 hover:bg-green-600 transition-all duration-300"
+            >
+              Submit
+            </Button>
+            <Button
+              onClick={closeModal}
+              className="bg-gray-400 flex-1 px-4 hover:bg-gray-500 transition-all duration-300"
+            >
+              Cancel
+            </Button>
+          </div>
+        </form>
       </Modal>
     </div>
   );
