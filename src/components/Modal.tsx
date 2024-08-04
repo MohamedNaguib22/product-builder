@@ -25,7 +25,7 @@ const Modal = ({ children, isOpen, closeModal }: IProps) => {
             >
               <DialogTitle
                 as="h3"
-                className="text-base/7 font-bold text-black text-[28px] mb-4"
+                className="text-base/7 font-bold text-black text-[30px] mb-4"
               >
                 Create New Product
               </DialogTitle>

@@ -1,14 +1,15 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import Card from "./components/Card";
 import Button from "./components/ui/Button";
-import { colors, formInputsList, productList } from "./Data";
+import { categories, colors, formInputsList, productList } from "./Data";
 import { IProducts } from "./interfaces";
 import Modal from "./components/Modal";
 import Input from "./components/ui/Input";
 import Color from "./components/Color";
 import { validationErrorMessage } from "./Validation";
 import Massage from "./components/Massage";
-
+import SelectCategory from "./components/SelectInput";
+import { v4 as uuid } from "uuid";
 const App = () => {
   // Function add product Comment
   // const addColor = (color: string)=> {
@@ -44,9 +45,8 @@ const App = () => {
     imageURL?: string;
     price?: string;
   }>();
-
   const [isOpen, setIsOpen] = useState(false);
-  console.log(error);
+  const [selected, setSelected] = useState(categories[3]);
 
   // ------Functions--------
   const updateLocalStorage = (updatedProducts: IProducts[]) => {
@@ -87,21 +87,25 @@ const App = () => {
     setError((prevError) => ({ ...prevError, [name]: "" }));
   };
   // use Error function
-  const errors = validationErrorMessage({
-    title: "",
-    description: "",
-    imageURL: "",
-    price: "",
-  });
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError(errors);
+    const { title, description, price, imageURL } = product;
+    const errors = validationErrorMessage({
+      title,
+      description,
+      price,
+      imageURL,
+    });
+    console.log(errors);
     const errorMsg =
       Object.values(errors).some((i) => i === "") &&
       Object.values(errors).every((i) => i === "");
-    const updatedProducts = [product, ...products];
     if (errorMsg) {
+      const updatedProducts = [
+        { ...product, id: uuid(), category: selected },
+        ...products,
+      ];
       setProducts(updatedProducts);
       updateLocalStorage(updatedProducts);
       // setProducts((prev) => {
@@ -112,10 +116,11 @@ const App = () => {
       setIsOpen(false);
       setProduct(defaultData);
     } else {
+      setError(errors);
       return;
     }
   };
-  
+
   // ---------Render-----------
 
   const renderCard = products.map((product) => (
@@ -167,7 +172,12 @@ const App = () => {
       <Modal isOpen={isOpen} closeModal={closeModal}>
         <form onSubmit={onSubmit}>
           {renderInput}
-          <div className="flex gap-2 items-center flex-wrap">{renderColor}</div>
+          <div>
+            <SelectCategory selected={selected} setSelected={setSelected} />
+          </div>
+          <div className="flex gap-2 items-center flex-wrap mt-4">
+            {renderColor}
+          </div>
           <div className="flex gap-2 items-center flex-wrap mt-2">
             {renderColorClick}
           </div>
