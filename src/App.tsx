@@ -27,7 +27,7 @@ const App = () => {
     description: "",
     imageURL: "",
     price: "",
-    colors: [],
+    colors: [""],
     category: {
       name: "",
       imageURL: "",
@@ -49,6 +49,7 @@ const App = () => {
   const [selected, setSelected] = useState(categories[3]);
   const [switchFun, setSwitchFun] = useState("create");
   const [id, setId] = useState<number>(0);
+  console.log(switchFun);
 
   // ------Functions--------
   const updateLocalStorage = (updatedProducts: IProducts[]) => {
@@ -65,6 +66,8 @@ const App = () => {
 
   const closeModal = () => {
     setIsOpen(false);
+    setSwitchFun("create");
+    setProduct(defaultData);
   };
 
   const addColorInProduct = (color: string) => {
@@ -72,6 +75,7 @@ const App = () => {
       return;
     }
     setProduct((prv) => ({ ...prv, colors: [...prv.colors, color] }));
+    // setColor(prev => [...prev , color])
   };
 
   const removeColor = (i: string) => {
@@ -98,7 +102,6 @@ const App = () => {
       price,
       imageURL,
     });
-    console.log(errors);
     const errorMsg =
       Object.values(errors).some((i) => i === "") &&
       Object.values(errors).every((i) => i === "");
@@ -122,16 +125,16 @@ const App = () => {
         return;
       }
     } else {
-    if(errorMsg) {
+      if (errorMsg) {
         const updateData = [...products];
-      updateData[id] = product;
-      setProducts(updateData);
-      setIsOpen(false);
-      setProduct(defaultData);
-    }else {
+        updateData[id] = product;
+        setProducts(updateData);
+        setIsOpen(false);
+        setProduct(defaultData);
+      } else {
         setError(errors);
         return;
-    }
+      }
     }
   };
 
@@ -180,7 +183,10 @@ const App = () => {
       {/* Button */}
       <div className="flex justify-center pb-8">
         <Button
-          onClick={openModal}
+          onClick={() => {
+            setSwitchFun("create");
+            openModal();
+          }}
           width="w-fit"
           className="bg-green-500 flex-2 hover:bg-green-600 transition-all duration-300 px-4"
         >
@@ -220,7 +226,10 @@ const App = () => {
               Submit
             </Button>
             <Button
-              onClick={closeModal}
+              onClick={() => {
+                closeModal();
+              }}
+              type="button"
               className="bg-gray-400 flex-1 px-4 hover:bg-gray-500 transition-all duration-300"
             >
               Cancel
