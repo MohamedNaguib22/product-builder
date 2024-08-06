@@ -39,7 +39,7 @@ const App = () => {
     const savedProducts = localStorage.getItem("products");
     return savedProducts ? JSON.parse(savedProducts) : productList;
   });
-  const [product, setProduct] = useState<IProducts>(defaultData);
+  const [product, setProduct] = useState<IProducts>(defaultData); 
   const [error, setError] = useState<{
     title?: string;
     description?: string;
@@ -233,7 +233,7 @@ const App = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
         {renderCard}
       </div>
-      <Modal isOpen={isOpen} closeModal={closeModal}>
+      <Modal isOpen={isOpen} closeModal={closeModal} switchFun={switchFun}>
         <form onSubmit={onSubmit}>
           {renderInput}
           <div>
@@ -273,7 +273,11 @@ const App = () => {
           </div>
         </form>
       </Modal>
-      <Modal isOpen={isOpenModalDelete} closeModal={closeModalRemove}>
+      <Modal
+        isOpen={isOpenModalDelete}
+        closeModal={closeModalRemove}
+        switchFun={switchFun}
+      >
         <p className="text-[26px] font-medium">
           Do yo Delete This Product .... ?
         </p>

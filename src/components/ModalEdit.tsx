@@ -5,10 +5,10 @@ interface IProps {
   children: ReactNode;
   isOpen: boolean;
   closeModal: () => void;
-  switchFun?: string;
+  // switchFun?: string;
 }
 
-const Modal = ({ children, isOpen, closeModal, switchFun }: IProps) => {
+const ModalEdit = ({ children, isOpen, closeModal }: IProps) => {
   return (
     <>
       <Dialog
@@ -28,7 +28,7 @@ const Modal = ({ children, isOpen, closeModal, switchFun }: IProps) => {
                 as="h3"
                 className="text-base/7 font-bold text-black text-[30px] mb-4"
               >
-                {switchFun === "create" ? "Create New Product" : switchFun === "edit" ? "Edit Product" : "Delete Product"}
+                {/* {switchFun === "create" ? "Create New Product" : switchFun === "edit" ? "Edit Product" : "Delete Product"} */}
               </DialogTitle>
               {children}
             </DialogPanel>
@@ -38,4 +38,4 @@ const Modal = ({ children, isOpen, closeModal, switchFun }: IProps) => {
     </>
   );
 };
-export default Modal;
+export default ModalEdit;
