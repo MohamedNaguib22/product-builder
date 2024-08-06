@@ -9,7 +9,10 @@ interface IProps {
   setProduct: (product: IProducts) => void;
   openModal: () => void;
   setSwitchFun: (val: string) => void;
-  setId: (val: number) => void;
+  setId: (val: number|string) => void;
+  
+  setIsOpenModalDelete: (val:boolean) => void;
+  isOpenModalDelete:boolean
 }
 const Card = ({
   product,
@@ -18,6 +21,8 @@ const Card = ({
   setSwitchFun,
   index,
   setId,
+  setIsOpenModalDelete,
+  isOpenModalDelete,
 }: IProps) => {
   const { category, description, imageURL, colors, price, title } = product;
   // ------- String To Number -----------
@@ -34,6 +39,10 @@ const Card = ({
     setSwitchFun("edit");
     setId(index);
     openModal();
+  };
+  const openModalRemove = () => {
+    setIsOpenModalDelete(!isOpenModalDelete);
+    setId(product?.id || "")
   };
   return (
     <div className="border rounded-lg flex flex-col p-2 justify-between">
@@ -90,7 +99,10 @@ const Card = ({
         >
           Edit
         </Button>
-        <Button className="bg-red-500 flex-1 px-4 hover:bg-red-600 transition-all duration-300">
+        <Button
+          className="bg-red-600 flex-1 px-4 hover:bg-red-700 transition-all duration-300"
+          onClick={openModalRemove}
+        >
           Remove
         </Button>
       </div>

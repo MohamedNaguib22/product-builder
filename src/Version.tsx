@@ -10,8 +10,7 @@ import { validationErrorMessage } from "./Validation";
 import Massage from "./components/Massage";
 import SelectCategory from "./components/SelectInput";
 import { v4 as uuid } from "uuid";
-import toast, { Toaster } from "react-hot-toast";
-const App = () => {
+const Version = () => {
   // Function add product Comment
   // const addColor = (color: string)=> {
   //     setProduct((prv)=> {
@@ -28,7 +27,7 @@ const App = () => {
     description: "",
     imageURL: "",
     price: "",
-    colors: [],
+    colors: [""],
     category: {
       name: "",
       imageURL: "",
@@ -47,10 +46,10 @@ const App = () => {
     price?: string;
   }>();
   const [isOpen, setIsOpen] = useState(false);
-  const [isOpenModalDelete, setIsOpenModalDelete] = useState(false);
   const [selected, setSelected] = useState(categories[3]);
   const [switchFun, setSwitchFun] = useState("create");
-  const [id, setId] = useState<number|string>(0);
+  const [id, setId] = useState<number>(0);
+  console.log(switchFun);
 
   // ------Functions--------
   const updateLocalStorage = (updatedProducts: IProducts[]) => {
@@ -63,10 +62,6 @@ const App = () => {
 
   const openModal = () => {
     setIsOpen(true);
-  };
-
-  const closeModalRemove = () => {
-    setIsOpenModalDelete((prv) => !prv);
   };
 
   const closeModal = () => {
@@ -110,7 +105,6 @@ const App = () => {
     const errorMsg =
       Object.values(errors).some((i) => i === "") &&
       Object.values(errors).every((i) => i === "");
-      // add product
     if (switchFun === "create") {
       if (errorMsg) {
         const updatedProducts = [
@@ -126,51 +120,23 @@ const App = () => {
         // });
         setIsOpen(false);
         setProduct(defaultData);
-          toast("Product has been added successfully!", {
-            icon: "👏",
-            style: {
-              backgroundColor: "black",
-              color: "white",
-            },
-          });
       } else {
         setError(errors);
         return;
       }
-    }
-    // Edit Product 
-    else {
+    } else {
       if (errorMsg) {
         const updateData = [...products];
-        updateData[Number(id)] = product;
+        updateData[id] = product;
         setProducts(updateData);
         setIsOpen(false);
         setProduct(defaultData);
-          toast("Product has been Edit successfully!", {
-            icon: "👏",
-            style: {
-              backgroundColor: "black",
-              color: "white",
-            },
-          });
       } else {
         setError(errors);
         return;
       }
     }
   };
-
-  const removeCard = (id:string)=> {
-    setProducts((prv)=> prv.filter((i)=> i.id!==id))
-      toast("Product has been deleted successfully!", {
-        icon: "👏",
-        style: {
-          backgroundColor: "#c2344d",
-          color: "white",
-        },
-      });
-    setIsOpenModalDelete((prv)=> !prv)
-  }
 
   // ---------Render-----------
 
@@ -183,8 +149,6 @@ const App = () => {
       setSwitchFun={setSwitchFun}
       setId={setId}
       index={index}
-      setIsOpenModalDelete={setIsOpenModalDelete}
-      isOpenModalDelete={isOpenModalDelete}
     />
   ));
   const renderColor = colors.map((color) => (
@@ -215,7 +179,7 @@ const App = () => {
     </div>
   ));
   return (
-    <main className="container py-6 ">
+    <div className="container py-6 ">
       {/* Button */}
       <div className="flex justify-center pb-8">
         <Button
@@ -273,29 +237,8 @@ const App = () => {
           </div>
         </form>
       </Modal>
-      <Modal isOpen={isOpenModalDelete} closeModal={closeModalRemove}>
-        <p className="text-[26px] font-medium">
-          Do yo Delete This Product .... ?
-        </p>
-        <div className="flex items-center space-x-2">
-          <Button
-            className="bg-red-600 flex-2 hover:bg-red-700 transition-all duration-300"
-            onClick={() => removeCard(id.toString())}
-          >
-            Delete
-          </Button>
-          <Button
-            onClick={closeModalRemove}
-            type="button"
-            className="bg-gray-400 flex-1 px-4 hover:bg-gray-500 transition-all duration-300"
-          >
-            Cancel
-          </Button>
-        </div>
-      </Modal>
-      <Toaster />
-    </main>
+    </div>
   );
 };
 
-export default App;
+export default Version;
