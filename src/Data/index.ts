@@ -65,7 +65,7 @@ export const productList: IProducts[] = [
     imageURL:
       "https://images.unsplash.com/photo-1552831388-6a0b3575b32a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1632&q=80",
     price: "1500",
-    colors: [""],
+    colors: [],
     category: {
       name: "PC Desktop",
       imageURL:
@@ -136,7 +136,7 @@ export const productList: IProducts[] = [
     imageURL:
       "https://images.pexels.com/photos/4158/apple-iphone-smartphone-desk.jpg?auto=compress&cs=tinysrgb&w=600",
     price: "120000",
-    colors: [""],
+    colors: [],
     category: {
       name: "Macbook - Ipad",
       imageURL:

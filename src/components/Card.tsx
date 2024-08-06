@@ -81,14 +81,12 @@ const Card = ({
       </div>
       {/* Color */}
       <div className="flex space-x-2 items-center flex-wrap">
-        {colors.map((color) =>
-          color.length == 0 ? (
-            <p key={color} className="font-medium text-gray-500">
-              Not Found Color in this product.....
-            </p>
-          ) : (
-            <Color color={color} key={color} />
-          )
+        {colors.length === 0 ? (
+          <p className="font-medium text-gray-500">
+            Not Found Color in this product.....
+          </p>
+        ) : (
+          colors.map((color) => <Color color={color} key={color} />)
         )}
       </div>
       {/* Button */}
