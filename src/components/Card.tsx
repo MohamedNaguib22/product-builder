@@ -5,8 +5,20 @@ import Button from "./ui/Button";
 
 interface IProps {
   product: IProducts;
+  index: number;
+  setProduct: (product: IProducts) => void;
+  openModal: () => void;
+  setSwitchFun: (val: string) => void;
+  setId: (val: number) => void;
 }
-const Card = ({ product }: IProps) => {
+const Card = ({
+  product,
+  setProduct,
+  openModal,
+  setSwitchFun,
+  index,
+  setId,
+}: IProps) => {
   const { category, description, imageURL, colors, price, title } = product;
   // ------- String To Number -----------
   // const amount = parseInt(amountString, 10);
@@ -16,6 +28,13 @@ const Card = ({ product }: IProps) => {
     style: "currency",
     currency: "USD",
   });
+  // -------- Function Handel ----------
+  const editHandlerOpenModal = () => {
+    setProduct(product);
+    setSwitchFun("edit");
+    setId(index);
+    openModal();
+  };
   return (
     <div className="border rounded-lg flex flex-col p-2 justify-between">
       {/* Image */}
@@ -65,7 +84,10 @@ const Card = ({ product }: IProps) => {
       </div>
       {/* Button */}
       <div className="flex items-center space-x-2">
-        <Button className="bg-green-500 flex-2 hover:bg-green-600 transition-all duration-300">
+        <Button
+          onClick={editHandlerOpenModal}
+          className="bg-green-500 flex-2 hover:bg-green-600 transition-all duration-300"
+        >
           Edit
         </Button>
         <Button className="bg-red-500 flex-1 px-4 hover:bg-red-600 transition-all duration-300">

@@ -47,6 +47,8 @@ const App = () => {
   }>();
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState(categories[3]);
+  const [switchFun, setSwitchFun] = useState("create");
+  const [id, setId] = useState<number>(0);
 
   // ------Functions--------
   const updateLocalStorage = (updatedProducts: IProducts[]) => {
@@ -55,7 +57,7 @@ const App = () => {
 
   useEffect(() => {
     updateLocalStorage(products);
-  }, [products]);
+  }, [product, products]);
 
   const openModal = () => {
     setIsOpen(true);
@@ -86,7 +88,6 @@ const App = () => {
     setProduct((prv) => ({ ...prv, [name]: value }));
     setError((prevError) => ({ ...prevError, [name]: "" }));
   };
-  // use Error function
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -101,30 +102,51 @@ const App = () => {
     const errorMsg =
       Object.values(errors).some((i) => i === "") &&
       Object.values(errors).every((i) => i === "");
-    if (errorMsg) {
-      const updatedProducts = [
-        { ...product, id: uuid(), category: selected },
-        ...products,
-      ];
-      setProducts(updatedProducts);
-      updateLocalStorage(updatedProducts);
-      // setProducts((prev) => {
-      //   const updatedProducts = [product, ...prev];
-      //   updateLocalStorage(updatedProducts);
-      //   return updatedProducts;
-      // });
+    if (switchFun === "create") {
+      if (errorMsg) {
+        const updatedProducts = [
+          { ...product, id: uuid(), category: selected },
+          ...products,
+        ];
+        setProducts(updatedProducts);
+        updateLocalStorage(updatedProducts);
+        // setProducts((prev) => {
+        //   const updatedProducts = [product, ...prev];
+        //   updateLocalStorage(updatedProducts);
+        //   return updatedProducts;
+        // });
+        setIsOpen(false);
+        setProduct(defaultData);
+      } else {
+        setError(errors);
+        return;
+      }
+    } else {
+    if(errorMsg) {
+        const updateData = [...products];
+      updateData[id] = product;
+      setProducts(updateData);
       setIsOpen(false);
       setProduct(defaultData);
-    } else {
-      setError(errors);
-      return;
+    }else {
+        setError(errors);
+        return;
+    }
     }
   };
 
   // ---------Render-----------
 
-  const renderCard = products.map((product) => (
-    <Card key={product.id} product={product} />
+  const renderCard = products.map((product, index) => (
+    <Card
+      key={product.id}
+      product={product}
+      setProduct={setProduct}
+      openModal={openModal}
+      setSwitchFun={setSwitchFun}
+      setId={setId}
+      index={index}
+    />
   ));
   const renderColor = colors.map((color) => (
     <Color onClick={() => addColorInProduct(color)} key={color} color={color} />
@@ -173,7 +195,16 @@ const App = () => {
         <form onSubmit={onSubmit}>
           {renderInput}
           <div>
-            <SelectCategory selected={selected} setSelected={setSelected} />
+            {switchFun === "create" ? (
+              <SelectCategory selected={selected} setSelected={setSelected} />
+            ) : (
+              <SelectCategory
+                selected={product.category}
+                setSelected={(value) =>
+                  setProduct((prv) => ({ ...prv, category: value }))
+                }
+              />
+            )}
           </div>
           <div className="flex gap-2 items-center flex-wrap mt-4">
             {renderColor}
